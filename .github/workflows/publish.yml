@@ -1,0 +1,37 @@
+name: publish to Github package
+
+on:
+  release:
+    types: [published]
+  push:
+    branches:
+      - main
+
+env:
+  NPM_SQUARECAT_TOKEN: ${{secrets.NPM_SQUARECAT_TOKEN}}
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 16
+      - run: yarn
+
+  publish-gpr:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release'
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 16
+          registry-url: https://npm.pkg.github.com/
+          scope: "@squarecat"
+      - run: yarn install
+      - run: git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com" && git config --global user.name "$GITHUB_ACTOR"
+      - run: yarn config set version-git-tag false
+      - run: yarn publish && echo "Successfully released version $npm_package_version!"

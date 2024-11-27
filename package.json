@@ -1,5 +1,5 @@
 {
-  "name": "passport-outlook",
+  "name": "@squarecat/passport-outlook",
   "version": "3.1.2",
   "description": "Outlook REST API v2 authentication strategy for Passport.",
   "keywords": [
